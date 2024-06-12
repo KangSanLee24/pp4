@@ -7,6 +7,7 @@ import {
   HASH_SALT_ROUNDS,
 } from "../constants/auth.constant.js";
 import { UsersRepository } from "../repositories/users.repository.js";
+import { HttpError } from "../errors/http.error.js";
 
 export class AuthService {
   usersRepository = new UsersRepository();
@@ -14,7 +15,8 @@ export class AuthService {
   signUp = async (email, password, name) => {
     // 이메일이 중복됬는지 체크
     const existedUser = await this.usersRepository.findUserByEmail(email);
-    if (existedUser) throw new Error(MESSAGES.AUTH.COMMON.EMAIL.DUPLICATED);
+    if (existedUser)
+      throw new HttpError.Conflict(MESSAGES.AUTH.COMMON.EMAIL.DUPLICATED);
 
     // 비밀번호 뭉게기
     const hashedPassword = bcrypt.hashSync(password, HASH_SALT_ROUNDS);
@@ -39,7 +41,8 @@ export class AuthService {
     const isPasswordMatched =
       user && bcrypt.compareSync(password, user.password);
 
-    if (!isPasswordMatched) throw new Error(MESSAGES.AUTH.COMMON.UNAUTHORIZED);
+    if (!isPasswordMatched)
+      throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.UNAUTHORIZED);
 
     // 그 사용자 id를 payload로 해서 accesstoken 발급
     const payload = { id: user.id };
@@ -60,17 +63,17 @@ export class AuthService {
       const user = await this.usersRepository.findUserById(payload.id);
 
       if (!user) {
-        throw new Error(MESSAGES.AUTH.COMMON.JWT.NO_USER);
+        throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.JWT.NO_USER);
       }
 
       return user;
     } catch (error) {
       // AccessToken의 유효기한이 지난 경우
       if (error.name === "TokenExpiredError") {
-        throw new Error(MESSAGES.AUTH.COMMON.JWT.EXPIRED);
+        throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.JWT.EXPIRED);
       } else {
         // 그 밖의 AccessToken 검증에 실패한 경우
-        throw new Error(MESSAGES.AUTH.COMMON.JWT.INVALID);
+        throw new HttpError.Unauthorized(MESSAGES.AUTH.COMMON.JWT.INVALID);
       }
     }
   };
