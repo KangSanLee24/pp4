@@ -10,6 +10,6 @@ const authController = new AuthController();
 authRouter.post("/sign-up", signUpValidator, authController.signUp);
 
 // 로그인 API /api/auth/sign-in
-authRouter.post("/sign-in", authController.signIn);
+authRouter.post("/sign-in", signInValidator, authController.signIn);
 
 export { authRouter };
