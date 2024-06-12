@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { MESSAGES } from "../constants/message.constant.js";
 import { ACCESS_TOKEN_SECRET } from "../constants/env.constant.js";
-
 import {
   ACCESS_TOKEN_EXPIRES_IN,
   HASH_SALT_ROUNDS,
@@ -50,5 +49,29 @@ export class AuthService {
     });
 
     return accessToken;
+  };
+
+  // Accesstoken받고 payload로 user정보 받음.
+  verifyAccessToken = async (accessToken) => {
+    try {
+      // token받고 payload로 사용자 체크
+      const payload = jwt.verify(accessToken, ACCESS_TOKEN_SECRET);
+
+      const user = await this.usersRepository.findUserById(payload.id);
+
+      if (!user) {
+        throw new Error(MESSAGES.AUTH.COMMON.JWT.NO_USER);
+      }
+
+      return user;
+    } catch (error) {
+      // AccessToken의 유효기한이 지난 경우
+      if (error.name === "TokenExpiredError") {
+        throw new Error(MESSAGES.AUTH.COMMON.JWT.EXPIRED);
+      } else {
+        // 그 밖의 AccessToken 검증에 실패한 경우
+        throw new Error(MESSAGES.AUTH.COMMON.JWT.INVALID);
+      }
+    }
   };
 }
