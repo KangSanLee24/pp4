@@ -1,10 +1,12 @@
-import jwt from "jsonwebtoken";
 import { HTTP_STATUS } from "../constants/http-status.constant.js";
 import { MESSAGES } from "../constants/message.constant.js";
-import { ACCESS_TOKEN_SECRET } from "../constants/env.constant.js";
-import { prisma } from "../utils/prisma.util.js";
+import { AuthService } from "../services/auth.service.js";
 
+// authorization 받고 service 계층에 accessToken보내고
+//user정보 받음. req.user에 user넣고 next => authorization 체크
 export const requireAccessToken = async (req, res, next) => {
+  const authService = new AuthService();
+
   try {
     // 인증 정보 파싱
     const authorization = req.headers.authorization;
@@ -19,7 +21,7 @@ export const requireAccessToken = async (req, res, next) => {
 
     // JWT 표준 인증 형태와 일치하지 않는 경우
     const [type, accessToken] = authorization.split(" ");
-
+    console.log("----", type);
     if (type !== "Bearer") {
       return res.status(HTTP_STATUS.UNAUTHORIZED).json({
         status: HTTP_STATUS.UNAUTHORIZED,
@@ -35,42 +37,18 @@ export const requireAccessToken = async (req, res, next) => {
       });
     }
 
-    let payload;
     try {
-      payload = jwt.verify(accessToken, ACCESS_TOKEN_SECRET);
+      // AccessToken보내면 service에서 사용자 정보 줌.
+      const user = await authService.verifyAccessToken(accessToken);
+      //
+      req.user = user;
+      next();
     } catch (error) {
-      // AccessToken의 유효기한이 지난 경우
-      if (error.name === "TokenExpiredError") {
-        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
-          status: HTTP_STATUS.UNAUTHORIZED,
-          message: MESSAGES.AUTH.COMMON.JWT.EXPIRED,
-        });
-      }
-      // 그 밖의 AccessToken 검증에 실패한 경우
-      else {
-        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
-          status: HTTP_STATUS.UNAUTHORIZED,
-          message: MESSAGES.AUTH.COMMON.JWT.INVALID,
-        });
-      }
-    }
-
-    // Payload에 담긴 사용자 ID와 일치하는 사용자가 없는 경우
-    const { id } = payload;
-    const user = await prisma.user.findUnique({
-      where: { id },
-      omit: { password: true },
-    });
-
-    if (!user) {
       return res.status(HTTP_STATUS.UNAUTHORIZED).json({
         status: HTTP_STATUS.UNAUTHORIZED,
-        message: MESSAGES.AUTH.COMMON.JWT.NO_USER,
+        message: error.message,
       });
     }
-
-    req.user = user;
-    next();
   } catch (error) {
     next(error);
   }
