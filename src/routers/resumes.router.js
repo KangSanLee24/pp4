@@ -1,14 +1,14 @@
-import express from 'express';
-import { HTTP_STATUS } from '../constants/http-status.constant.js';
-import { MESSAGES } from '../constants/message.constant.js';
-import { createResumeValidator } from '../middlewares/validators/create-resume-validator.middleware.js';
-import { prisma } from '../utils/prisma.util.js';
-import { updateResumeValidator } from '../middlewares/validators/updated-resume-validator.middleware.js';
+import express from "express";
+import { HTTP_STATUS } from "../constants/http-status.constant.js";
+import { MESSAGES } from "../constants/message.constant.js";
+import { createResumeValidator } from "../middlewares/validators/create-resume-validator.middleware.js";
+import { prisma } from "../utils/prisma.util.js";
+import { updateResumeValidator } from "../middlewares/validators/updated-resume-validator.middleware.js";
 
 const resumesRouter = express.Router();
 
 // 이력서 생성
-resumesRouter.post('/', createResumeValidator, async (req, res, next) => {
+resumesRouter.post("/", createResumeValidator, async (req, res, next) => {
   try {
     const user = req.user;
     const { title, content } = req.body;
@@ -33,7 +33,7 @@ resumesRouter.post('/', createResumeValidator, async (req, res, next) => {
 });
 
 // 이력서 목록 조회
-resumesRouter.get('/', async (req, res, next) => {
+resumesRouter.get("/", async (req, res, next) => {
   try {
     const user = req.user;
     const authorId = user.id;
@@ -42,8 +42,8 @@ resumesRouter.get('/', async (req, res, next) => {
 
     sort = sort?.toLowerCase();
 
-    if (sort !== 'desc' && sort !== 'asc') {
-      sort = 'desc';
+    if (sort !== "desc" && sort !== "asc") {
+      sort = "desc";
     }
 
     let data = await prisma.resume.findMany({
@@ -79,7 +79,7 @@ resumesRouter.get('/', async (req, res, next) => {
 });
 
 // 이력서 상세 조회
-resumesRouter.get('/:id', async (req, res, next) => {
+resumesRouter.get("/:id", async (req, res, next) => {
   try {
     const user = req.user;
     const authorId = user.id;
@@ -119,7 +119,7 @@ resumesRouter.get('/:id', async (req, res, next) => {
 });
 
 // 이력서 수정
-resumesRouter.put('/:id', updateResumeValidator, async (req, res, next) => {
+resumesRouter.put("/:id", updateResumeValidator, async (req, res, next) => {
   try {
     const user = req.user;
     const authorId = user.id;
@@ -158,7 +158,7 @@ resumesRouter.put('/:id', updateResumeValidator, async (req, res, next) => {
 });
 
 // 이력서 삭제
-resumesRouter.delete('/:id', async (req, res, next) => {
+resumesRouter.delete("/:id", async (req, res, next) => {
   try {
     const user = req.user;
     const authorId = user.id;
