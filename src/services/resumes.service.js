@@ -1,10 +1,10 @@
 import { MESSAGES } from "../constants/message.constant.js";
-import { ResumesRepository } from "../repositories/resumes.repository.js";
 import { HttpError } from "../errors/http.error.js";
 
 export class ResumesService {
-  resumesRepository = new ResumesRepository();
-
+  constructor(resumesRepository) {
+    this.resumesRepository = resumesRepository;
+  }
   // 이력서 생성
   createResume = async (authorId, title, content) => {
     const createdResume = await this.resumesRepository.createResume(
