@@ -1,5 +1,5 @@
 import { HTTP_STATUS } from "../constants/http-status.constant.js";
-import { HttpError } from "../errors/http.error.js";
+import { CustomHttpError } from "../errors/http.error.js";
 
 export const errorHandler = (err, req, res, next) => {
   console.error(err);
@@ -7,12 +7,7 @@ export const errorHandler = (err, req, res, next) => {
   switch (true) {
     // 커스텀 스킨
     // object instanceof constructor; 객체의 프로토타입 체인 어딘가 존재하는지 판별
-    case err instanceof HttpError.BadRequest:
-    case err instanceof HttpError.Unauthorized:
-    case err instanceof HttpError.Forbidden:
-    case err instanceof HttpError.NotFound:
-    case err instanceof HttpError.Conflict:
-    case err instanceof HttpError.InternalServerError:
+    case err instanceof CustomHttpError:
       return res.status(err.status).json({
         status: err.status,
         message: err.message,
