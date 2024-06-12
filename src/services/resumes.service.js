@@ -47,7 +47,7 @@ export class ResumesService {
       });
     }
 
-    resume = {
+    const data = {
       id: resume.id,
       authorName: resume.author.name,
       title: resume.title,
@@ -57,7 +57,7 @@ export class ResumesService {
       updatedAt: resume.updatedAt,
     };
 
-    return resume;
+    return data;
   };
   // 이력서 수정
   updateResume = async (id, authorId, title, content) => {
@@ -72,7 +72,7 @@ export class ResumesService {
         message: MESSAGES.RESUMES.COMMON.NOT_FOUND,
       });
     }
-
+    console.log("tes-----t");
     const updatedResume = await this.resumesRepository.updateResume(
       id,
       authorId,
