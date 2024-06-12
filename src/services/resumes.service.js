@@ -1,6 +1,6 @@
-import { HTTP_STATUS } from "../constants/http-status.constant.js";
 import { MESSAGES } from "../constants/message.constant.js";
 import { ResumesRepository } from "../repositories/resumes.repository.js";
+import { HttpError } from "../errors/http.error.js";
 
 export class ResumesService {
   resumesRepository = new ResumesRepository();
@@ -36,16 +36,13 @@ export class ResumesService {
       };
     });
   };
+
   // 이력서 상세 조회
   getResumeById = async (id, authorId) => {
     const resume = await this.resumesRepository.findResumeById(id, authorId);
 
-    if (!resume) {
-      return res.status(HTTP_STATUS.NOT_FOUND).json({
-        status: HTTP_STATUS.NOT_FOUND,
-        message: MESSAGES.RESUMES.COMMON.NOT_FOUND,
-      });
-    }
+    if (!resume)
+      throw new HttpError.NotFound(MESSAGES.RESUMES.COMMON.NOT_FOUND);
 
     const data = {
       id: resume.id,
@@ -59,6 +56,7 @@ export class ResumesService {
 
     return data;
   };
+
   // 이력서 수정
   updateResume = async (id, authorId, title, content) => {
     const existedResume = await this.resumesRepository.findResumeById(
@@ -66,13 +64,9 @@ export class ResumesService {
       authorId,
     );
 
-    if (!existedResume) {
-      return res.status(HTTP_STATUS.NOT_FOUND).json({
-        status: HTTP_STATUS.NOT_FOUND,
-        message: MESSAGES.RESUMES.COMMON.NOT_FOUND,
-      });
-    }
-    console.log("tes-----t");
+    if (!existedResume)
+      throw new HttpError.NotFound(MESSAGES.RESUMES.COMMON.NOT_FOUND);
+
     const updatedResume = await this.resumesRepository.updateResume(
       id,
       authorId,
@@ -89,12 +83,8 @@ export class ResumesService {
       authorId,
     );
 
-    if (!existedResume) {
-      return res.status(HTTP_STATUS.NOT_FOUND).json({
-        status: HTTP_STATUS.NOT_FOUND,
-        message: MESSAGES.RESUMES.COMMON.NOT_FOUND,
-      });
-    }
+    if (!existedResume)
+      throw new HttpError.NotFound(MESSAGES.RESUMES.COMMON.NOT_FOUND);
 
     const deletedResume = await this.resumesRepository.deleteResume(
       id,
