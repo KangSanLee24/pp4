@@ -2,7 +2,7 @@ import { prisma } from "../utils/prisma.util.js";
 
 export class ResumesRepository {
   // 이력서 생성
-  createResume = async () => {
+  createResume = async (authorId, title, content) => {
     const createdResume = prisma.resume.create({
       data: {
         authorId,
@@ -31,7 +31,7 @@ export class ResumesRepository {
 
   // id와 authorId받고 이력서 하나 가져오기
   findResumeById = async (id, authorId) => {
-    const data = await prisma.resume.findUnique({
+    const resume = await prisma.resume.findUnique({
       where: { id: +id, authorId },
       include: { author: true },
     });
