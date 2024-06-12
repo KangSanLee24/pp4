@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken';
-import { HTTP_STATUS } from '../constants/http-status.constant.js';
-import { MESSAGES } from '../constants/message.constant.js';
-import { ACCESS_TOKEN_SECRET } from '../constants/env.constant.js';
-import { prisma } from '../utils/prisma.util.js';
+import jwt from "jsonwebtoken";
+import { HTTP_STATUS } from "../constants/http-status.constant.js";
+import { MESSAGES } from "../constants/message.constant.js";
+import { ACCESS_TOKEN_SECRET } from "../constants/env.constant.js";
+import { prisma } from "../utils/prisma.util.js";
 
 export const requireAccessToken = async (req, res, next) => {
   try {
@@ -18,9 +18,9 @@ export const requireAccessToken = async (req, res, next) => {
     }
 
     // JWT 표준 인증 형태와 일치하지 않는 경우
-    const [type, accessToken] = authorization.split(' ');
+    const [type, accessToken] = authorization.split(" ");
 
-    if (type !== 'Bearer') {
+    if (type !== "Bearer") {
       return res.status(HTTP_STATUS.UNAUTHORIZED).json({
         status: HTTP_STATUS.UNAUTHORIZED,
         message: MESSAGES.AUTH.COMMON.JWT.NOT_SUPPORTED_TYPE,
@@ -40,7 +40,7 @@ export const requireAccessToken = async (req, res, next) => {
       payload = jwt.verify(accessToken, ACCESS_TOKEN_SECRET);
     } catch (error) {
       // AccessToken의 유효기한이 지난 경우
-      if (error.name === 'TokenExpiredError') {
+      if (error.name === "TokenExpiredError") {
         return res.status(HTTP_STATUS.UNAUTHORIZED).json({
           status: HTTP_STATUS.UNAUTHORIZED,
           message: MESSAGES.AUTH.COMMON.JWT.EXPIRED,
