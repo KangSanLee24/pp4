@@ -5,6 +5,7 @@ import { AuthService } from "../services/auth.service.js";
 // authorization 받고 service 계층에 accessToken보내고
 //user정보 받음. req.user에 user넣고 next => authorization 체크
 export const requireAccessToken = async (req, res, next) => {
+  // 의존성 주입 어떻게 해야할까...
   const authService = new AuthService();
 
   try {

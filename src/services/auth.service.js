@@ -6,11 +6,12 @@ import {
   ACCESS_TOKEN_EXPIRES_IN,
   HASH_SALT_ROUNDS,
 } from "../constants/auth.constant.js";
-import { UsersRepository } from "../repositories/users.repository.js";
 import { HttpError } from "../errors/http.error.js";
 
 export class AuthService {
-  usersRepository = new UsersRepository();
+  constructor(usersRepository) {
+    this.usersRepository = usersRepository;
+  }
 
   signUp = async (email, password, name) => {
     // 이메일이 중복됬는지 체크

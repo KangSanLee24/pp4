@@ -1,8 +1,12 @@
 import { prisma } from "../utils/prisma.util.js";
 
 export class UsersRepository {
+  constructor(prisma) {
+    //생성자(Constructor)에서 전달받은 Prisma 클라이언트의 의존성을 주입합니다.
+    this.prisma = prisma;
+  }
   findUserByEmail = async (email) => {
-    const user = await prisma.User.findFirst({
+    const user = await this.prisma.User.findFirst({
       where: { email },
     });
 
@@ -10,7 +14,7 @@ export class UsersRepository {
   };
 
   findUserById = async (id) => {
-    const user = await prisma.User.findUnique({
+    const user = await this.prisma.User.findUnique({
       where: { id: +id },
     });
 
@@ -18,7 +22,7 @@ export class UsersRepository {
   };
 
   createUser = async (email, hashedPassword, name) => {
-    const signUpUser = await prisma.User.create({
+    const signUpUser = await this.prisma.User.create({
       data: {
         email,
         password: hashedPassword,
