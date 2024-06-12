@@ -21,7 +21,7 @@ export const requireAccessToken = async (req, res, next) => {
 
     // JWT 표준 인증 형태와 일치하지 않는 경우
     const [type, accessToken] = authorization.split(" ");
-    console.log("----", type);
+
     if (type !== "Bearer") {
       return res.status(HTTP_STATUS.UNAUTHORIZED).json({
         status: HTTP_STATUS.UNAUTHORIZED,
