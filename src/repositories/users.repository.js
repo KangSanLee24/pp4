@@ -1,5 +1,3 @@
-import { prisma } from "../utils/prisma.util.js";
-
 export class UsersRepository {
   constructor(prisma) {
     //생성자(Constructor)에서 전달받은 Prisma 클라이언트의 의존성을 주입합니다.
