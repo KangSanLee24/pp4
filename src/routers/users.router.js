@@ -6,7 +6,7 @@ import { AuthService } from "../services/auth.service.js";
 import { UsersController } from "../controllers/users.controller.js";
 
 const usersRouter = express.Router();
-
+// 이놈은 controller계층에서 끝나서 authService나 그런거 입력 안받아도됨
 const usersController = new UsersController();
 
 // requireAccessToken에 의존성 주입

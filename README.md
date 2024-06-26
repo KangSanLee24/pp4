@@ -68,5 +68,5 @@ https://drawsql.app/teams/team-modolee/diagrams/sparta-node-advanced
 
 ```
 ex)
-🩹 fix :파일명.뭐고침
+🩹 fix/파일명.뭐고침
 ```
