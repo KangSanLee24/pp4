@@ -53,6 +53,8 @@ describe("Users Repository Unit Test", () => {
     // WHEN usersRepository의 findUserById Method를 호출
     const user = await usersRepository.findUserById(userId);
     // THEN
+    // userId에 맞는 정보가 들어오는지
+    expect(user.id).toEqual(userId);
     // findUnique 1번만 호출
     expect(usersRepository.prisma.User.findUnique).toHaveBeenCalledTimes(1);
     expect(usersRepository.prisma.User.findUnique).toHaveBeenCalledWith({
