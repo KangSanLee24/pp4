@@ -18,7 +18,7 @@ export class ResumesRepository {
   };
 
   //authorId와 sort받고 이력서들 가져오기
-  findResumesById = async (authorId, sort) => {
+  findResumes = async (authorId, sort) => {
     const resumes = await this.prisma.resume.findMany({
       where: { authorId },
       orderBy: {

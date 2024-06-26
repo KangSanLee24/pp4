@@ -9,7 +9,7 @@ import { MESSAGES } from "../../../src/constants/message.constant.js";
 
 const mockResumesRepository = {
   createResume: jest.fn(),
-  findResumesById: jest.fn(),
+  findResumes: jest.fn(),
   findResumeById: jest.fn(),
   updateResume: jest.fn(),
   deleteResume: jest.fn(),
@@ -66,7 +66,7 @@ describe("ResumesService Unit Test", () => {
     const mockReturn = dummyResumes.filter(
       (resume) => resume.authorId === authorId,
     );
-    mockResumesRepository.findResumesById.mockReturnValue(mockReturn);
+    mockResumesRepository.findResumes.mockReturnValue(mockReturn);
 
     const mapedResumes = mockReturn.map((resume) => ({
       id: resume.id,
@@ -80,8 +80,8 @@ describe("ResumesService Unit Test", () => {
     // WHEN
     const resumes = await resumesService.getResumes(authorId, sort);
     // THEN
-    expect(mockResumesRepository.findResumesById).toHaveBeenCalledTimes(1);
-    expect(mockResumesRepository.findResumesById).toHaveBeenCalledWith(
+    expect(mockResumesRepository.findResumes).toHaveBeenCalledTimes(1);
+    expect(mockResumesRepository.findResumes).toHaveBeenCalledWith(
       authorId,
       sort,
     );

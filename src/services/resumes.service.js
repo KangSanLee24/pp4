@@ -18,10 +18,7 @@ export class ResumesService {
 
   // 이력서 목록 조회
   getResumes = async (authorId, sort) => {
-    const resumes = await this.resumesRepository.findResumesById(
-      authorId,
-      sort,
-    );
+    const resumes = await this.resumesRepository.findResumes(authorId, sort);
 
     // 이쁘게 만들기
     return resumes.map((resume) => {
